@@ -29,5 +29,11 @@ public class InputManager : MonoBehaviour
         {
             gManager.Run(-1);
         }
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D mouseHit = Physics2D.Raycast(worldPoint, Vector2.zero);
+            Debug.Log(mouseHit.transform.position);
+        }
     }
 }
