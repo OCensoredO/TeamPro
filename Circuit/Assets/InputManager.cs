@@ -29,9 +29,5 @@ public class InputManager : MonoBehaviour
         {
             gManager.Run(-1);
         }
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            gManager.Jump();
-        }
     }
 }

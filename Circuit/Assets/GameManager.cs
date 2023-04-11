@@ -50,8 +50,6 @@ public class GameManager : MonoBehaviour
     {
         inputManager = gameObject.GetComponent<InputManager>();
         gSquareObj = GameObject.FindGameObjectWithTag("GSquare");
-        // originPos : Jump() 위한 임시 변수, 나중에 적당히 고칠 것
-        originPos = gSquareObj.transform.position;
         players = new List<Player>();
         foreach (GameObject pObj in GameObject.FindGameObjectsWithTag("Player"))
         {
@@ -67,23 +65,9 @@ public class GameManager : MonoBehaviour
     {
         inputManager.ManageInput();
 
-        // i : 점프 제어용으로 임시 선언 / 반드시 수정할 것
-        int i = -1;
-
         foreach (Player obj in players)
         {
             obj.moveCircular(runDistance);
-
-            // 점프 관련 코드들 => 나중에 꼭 수정할 것!!!!!!!!!!!!
-            Vector2 jumpPos = gSquareObj.transform.position;
-            Vector2 jumpVec = jumpPos - originPos;
-
-            Vector2 jumpDirection = new Vector2(i * obj.obj.transform.position.x, i * obj.obj.transform.position.y);
-            Vector2 totJumpVec = jumpDirection.normalized * jumpVec.magnitude;
-            obj.moveCircular(runDistance);
-            obj.obj.transform.position += (Vector3)totJumpVec;
-            Debug.Log(jumpVec.magnitude);
-            i = 1;
         }
     }
 
@@ -99,14 +83,5 @@ public class GameManager : MonoBehaviour
         {
             obj.Toggle();
         }
-    }
-
-    // Jump() : 물리 연산용 오브젝트를 띄우기 위한 메소드 / 추후 다른 클래스에 배치할 가능성 높음
-    // 지역 변수 등은 나중에 고쳐 쓸 것
-    public void Jump()
-    {
-        // 처음 점프하기 전 위치에서 얼마나 뛰었나를 알아와서 그거로 쿵짝쿵짝할 예정
-        gSquareObj.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 200.0f));
-        
     }
 }
