@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class Player
 {
+    float radius;
+
+    public const int Inner = 0;
+    public const int Outer = 1;
     // 빠른 기능 구현 위해 임시로 obj를 public으로 설정함, 따라서 나중에 public 키워드는 뺄 예정
     public GameObject obj;
-    float radius;
-    
+
     public Player(GameObject obj)
     {
         this.obj = obj;
@@ -37,11 +40,12 @@ public class Player
 
 public class GameManager : MonoBehaviour
 {
-    private InputManager inputManager;
-    private GameObject gSquareObj;
-    public List<Player> players;                   // player 오브젝트들 저장하는 리스트 (0 : 안쪽, 1 : 바깥쪽)
-    // originPos : Jump() 위한 임시 변수, 나중에 적당히 고칠 것
-    Vector2 originPos;
+    InputManager inputManager;
+    GameObject gSquareObj;
+    List<Player> m_players;                   // player 오브젝트들 저장하는 리스트
+    List<GameObject> m_maps;
+    //GameObject mapIn;
+    //GameObject mapOut;
 
     private float runDistance;
     private float speed;
@@ -50,12 +54,18 @@ public class GameManager : MonoBehaviour
     {
         inputManager = gameObject.GetComponent<InputManager>();
         gSquareObj = GameObject.FindGameObjectWithTag("GSquare");
-        players = new List<Player>();
+
+        // 플레이어 오브젝트 찾아서 할당하기
+        m_players = new List<Player>();
         foreach (GameObject pObj in GameObject.FindGameObjectsWithTag("Player"))
-        {
-            players.Add(new Player(pObj));
-        }
-        players[1].Toggle();
+            m_players.Add(new Player(pObj));
+        m_players[Player.Outer].Toggle();                        // 원의 안쪽에서부터 시작
+
+        // 배경 오브젝트 찾아서 할당하기
+        m_maps = new List<GameObject>();
+        foreach (GameObject mapObj in GameObject.FindGameObjectsWithTag("Map"))
+            m_maps.Add(mapObj);
+        m_maps[1].gameObject.SetActive(false);
 
         runDistance = 0.0f;
         speed = 2.0f;
@@ -65,7 +75,7 @@ public class GameManager : MonoBehaviour
     {
         inputManager.ManageInput();
 
-        foreach (Player obj in players)
+        foreach (Player obj in m_players)
         {
             obj.moveCircular(runDistance);
         }
@@ -77,11 +87,15 @@ public class GameManager : MonoBehaviour
         runDistance += Time.deltaTime * speed * (float)direction;
     }
 
-    public void TogglePlayer()
+    public void TogglePlayer(int playerIndex)
     {
-        foreach (Player obj in players)
-        {
-            obj.Toggle();
-        }
+        if (m_players[playerIndex].obj.activeSelf) return;
+        foreach (Player player in m_players) player.Toggle();
+    }
+
+    public void ToggleBackGround(int mapIndex)
+    {
+        if (m_maps[mapIndex].gameObject.activeSelf) return;
+        foreach (GameObject map in m_maps) map.gameObject.SetActive(!map.gameObject.activeSelf);
     }
 }
