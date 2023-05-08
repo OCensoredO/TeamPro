@@ -78,6 +78,8 @@ public class GameManager : MonoBehaviour
         foreach (Player obj in m_players)
         {
             obj.moveCircular(runDistance);
+            //©уюс╫ц
+            obj.obj.transform.localPosition = new Vector2(obj.obj.transform.localPosition.x, obj.obj.transform.localPosition.y + Mathf.Cos(Time.time) * 0.15f);
         }
     }
 
