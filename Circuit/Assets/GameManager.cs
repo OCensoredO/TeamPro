@@ -75,11 +75,11 @@ public class GameManager : MonoBehaviour
     {
         inputManager.ManageInput();
 
-        foreach (Player obj in m_players)
+        foreach (Player player in m_players)
         {
-            obj.moveCircular(runDistance);
-            //©уюс╫ц
-            obj.obj.transform.localPosition = new Vector2(obj.obj.transform.localPosition.x, obj.obj.transform.localPosition.y + Mathf.Cos(Time.time) * 0.15f);
+            player.moveCircular(runDistance);
+            // ╨ню╞╫це╟╠Б(©уюс╫ц)
+            player.obj.transform.localPosition += player.obj.transform.up * Mathf.Sin(Time.time * 1.5f) * 0.12f;
         }
     }
 
