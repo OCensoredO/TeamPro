@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Player
 {
@@ -36,6 +37,11 @@ public class Player
     {
         this.obj.SetActive(!this.obj.activeSelf);
     }
+
+    public void Interact()
+    {
+
+    }
 }
 
 public class GameManager : MonoBehaviour
@@ -44,6 +50,7 @@ public class GameManager : MonoBehaviour
     GameObject gSquareObj;
     List<Player> m_players;                   // player 오브젝트들 저장하는 리스트
     List<GameObject> m_maps;
+
     //GameObject mapIn;
     //GameObject mapOut;
 
@@ -53,7 +60,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         inputManager = gameObject.GetComponent<InputManager>();
-        gSquareObj = GameObject.FindGameObjectWithTag("GSquare");
+        //gSquareObj = GameObject.FindGameObjectWithTag("GSquare");
 
         // 플레이어 오브젝트 찾아서 할당하기
         m_players = new List<Player>();
@@ -81,6 +88,12 @@ public class GameManager : MonoBehaviour
             // 부유시키기(왕임시)
             player.obj.transform.localPosition += player.obj.transform.up * Mathf.Sin(Time.time * 1.5f) * 0.12f;
         }
+    }
+
+    public Player GetPlayer()
+    {
+
+        return m_players.FirstOrDefault(p => p.obj.activeSelf);
     }
 
     public void Run(int direction)
