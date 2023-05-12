@@ -5,17 +5,21 @@ using System.Linq;
 
 public class Player
 {
-    float radius;
+    // 원형 맵의 중앙에서 떨어진 거리, 좋은 변수명은 아닌듯 해서 수정 가능성 높음
+    private float posByRadius;
 
+    // 안팎 구분 위해 쓸 상수 설정
     public const int Inner = 0;
     public const int Outer = 1;
+
     // 빠른 기능 구현 위해 임시로 obj를 public으로 설정함, 따라서 나중에 public 키워드는 뺄 예정
-    public GameObject obj;
+    // ...이었는데 아래처럼 중괄호 안에 속성 부여?하면 보안상으로도 문제?없는?듯?
+    public GameObject obj { get; private set; }
 
     public Player(GameObject obj)
     {
         this.obj = obj;
-        this.radius = Vector2.Distance(Vector2.zero, obj.transform.position);
+        this.posByRadius = Vector2.Distance(Vector2.zero, obj.transform.position);
     }
 
     // moveCircular : 달린 거리값(runDistance)을 받아서 해당 위치로 이동 및 궤도에 알맞게 회전
@@ -28,8 +32,8 @@ public class Player
     // RunDistanceToPos : float형의 달린 거리값(runDistance)을 Vector2 값으로 바꿔서 반환
     public Vector2 RunDistanceToPos(float runDistance)
     {
-        Vector2 pos = new Vector2(radius * Mathf.Cos(runDistance - Mathf.PI / 2.0f),
-                                   radius * Mathf.Sin(runDistance - Mathf.PI / 2.0f));
+        Vector2 pos = new Vector2(posByRadius * Mathf.Cos(runDistance - Mathf.PI / 2.0f),
+                                   posByRadius * Mathf.Sin(runDistance - Mathf.PI / 2.0f));
         return pos;
     }
 
@@ -40,22 +44,29 @@ public class Player
 
     public void Interact()
     {
-
+        switch (obj.GetComponent<BoxCollider2D>().tag)
+        {
+            case "Lever":
+                break;
+            default:
+                break;
+        }
     }
 }
 
 public class GameManager : MonoBehaviour
 {
-    InputManager inputManager;
-    GameObject gSquareObj;
-    List<Player> m_players;                   // player 오브젝트들 저장하는 리스트
-    List<GameObject> m_maps;
+    private InputManager inputManager;
+    //GameObject gSquareObj;
+    public List<Player> m_players { get; private set; }                   // player 오브젝트들 저장하는 리스트
+    public List<GameObject> m_maps { get; private set; }
 
     //GameObject mapIn;
     //GameObject mapOut;
 
     private float runDistance;
     private float speed;
+    bool leverState;
 
     void Start()
     {
@@ -76,6 +87,7 @@ public class GameManager : MonoBehaviour
 
         runDistance = 0.0f;
         speed = 2.0f;
+        leverState = false;
     }
 
     private void Update()
@@ -90,10 +102,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public Player GetPlayer()
+    // 안팎의 하나씩 있는 두 플레이어 오브젝트 중, 현재 활성화된(즉 화면에 보이는) 플레이어의 원하는 컴포넌트 반환
+    public T GetActivePlayerComponent<T>()
     {
-
-        return m_players.FirstOrDefault(p => p.obj.activeSelf);
+        return m_players.FirstOrDefault(p => p.obj.activeSelf).obj.GetComponent<T>();
     }
 
     public void Run(int direction)
@@ -108,6 +120,7 @@ public class GameManager : MonoBehaviour
         foreach (Player player in m_players) player.Toggle();
     }
 
+    // 배경 전환
     public void ToggleBackGround(int mapIndex)
     {
         if (m_maps[mapIndex].gameObject.activeSelf) return;

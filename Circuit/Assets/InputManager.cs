@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class InputManager : MonoBehaviour
 {
@@ -13,7 +14,6 @@ public class InputManager : MonoBehaviour
 
     public void ManageInput()
     {
-        // 의도하는 바로는 위, 아래 방향키 입력 시 각각 밖, 안으로 전환되어야 하나, 임시로 아무 키나 눌러도 반대쪽으로 전환되게 함
         // 바깥으로 나가기
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
@@ -34,7 +34,13 @@ public class InputManager : MonoBehaviour
         {
             gManager.Run(-1);
         }
-        // 클릭 시 맵 반전(최적화 안 됨)
+        // 스페이스 : 상호작용
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            gManager.m_players.FirstOrDefault(p => p.obj.activeSelf).Interact();
+        }
+        // 클릭 시 맵 반전(최적화 안 됨)(일단은 안씀)
+        /*
         if (Input.GetMouseButtonDown(0))
         {
             Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -49,5 +55,6 @@ public class InputManager : MonoBehaviour
                 gManager.ToggleBackGround(1);
             }
         }
+        */
     }
 }
