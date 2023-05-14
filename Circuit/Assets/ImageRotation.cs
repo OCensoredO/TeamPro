@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// ¾È¾¸
+/*
 public class ImageRotation : MonoBehaviour
 {
     private float rotSpeed = 90.0f;
@@ -25,3 +27,4 @@ public class ImageRotation : MonoBehaviour
         }
     }
 }
+*/

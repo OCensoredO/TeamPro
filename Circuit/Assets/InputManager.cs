@@ -37,7 +37,15 @@ public class InputManager : MonoBehaviour
         // 스페이스 : 상호작용
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            gManager.m_players.FirstOrDefault(p => p.obj.activeSelf).Interact();
+            gManager.Interact();
+        }
+        if (Input.GetKey(KeyCode.Q))
+        {
+            gManager.RotateCamera(-1);
+        }
+        if (Input.GetKey(KeyCode.E))
+        {
+            gManager.RotateCamera(1);
         }
         // 클릭 시 맵 반전(최적화 안 됨)(일단은 안씀)
         /*

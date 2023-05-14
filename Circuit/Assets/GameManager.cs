@@ -41,22 +41,14 @@ public class Player
     {
         this.obj.SetActive(!this.obj.activeSelf);
     }
-
-    public void Interact()
-    {
-        switch (obj.GetComponent<BoxCollider2D>().tag)
-        {
-            case "Lever":
-                break;
-            default:
-                break;
-        }
-    }
 }
 
 public class GameManager : MonoBehaviour
 {
-    private InputManager inputManager;
+    //public int boolToDirection(bool b) { return b ? 1 : -1; }
+
+    private InputManager m_inputManager;
+    private GameObject m_camera;
     //GameObject gSquareObj;
     public List<Player> m_players { get; private set; }                   // player 오브젝트들 저장하는 리스트
     public List<GameObject> m_maps { get; private set; }
@@ -66,12 +58,12 @@ public class GameManager : MonoBehaviour
 
     private float runDistance;
     private float speed;
-    bool leverState;
+    public bool leverState { get; private set; }
 
     void Start()
     {
-        inputManager = gameObject.GetComponent<InputManager>();
-        //gSquareObj = GameObject.FindGameObjectWithTag("GSquare");
+        m_inputManager = gameObject.GetComponent<InputManager>();
+        m_camera = GameObject.FindGameObjectWithTag("MainCamera");
 
         // 플레이어 오브젝트 찾아서 할당하기
         m_players = new List<Player>();
@@ -92,7 +84,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        inputManager.ManageInput();
+        m_inputManager.ManageInput();
 
         foreach (Player player in m_players)
         {
@@ -102,7 +94,20 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // 안팎의 하나씩 있는 두 플레이어 오브젝트 중, 현재 활성화된(즉 화면에 보이는) 플레이어의 원하는 컴포넌트 반환
+    public void Interact()
+    {
+        switch (GetActivePlayerComponent<CollisionCheck>().m_collidedObjTag)
+        {
+            case "Lever":
+                Debug.Log("레버 건드림");
+                leverState = !leverState;
+                break;
+            default:
+                break;
+        }
+    }
+
+    // 안팎의 하나씩 있는 두 플레이어 오브젝트 중, 현재 활성화된(즉 화면에 보이는) 플레이어의 원하는 컴포넌트(T) 반환
     public T GetActivePlayerComponent<T>()
     {
         return m_players.FirstOrDefault(p => p.obj.activeSelf).obj.GetComponent<T>();
@@ -110,8 +115,11 @@ public class GameManager : MonoBehaviour
 
     public void Run(int direction)
     {
+        // 벽 충돌 처리용 변수...인데 아무래도 깔끔하게 안 되는지라 여기에 시간 많이 할애할 거 아니면 벽을 안 넣는게 최선일 거 같음
+        float wallCollisionCalibration = GetActivePlayerComponent<CollisionCheck>().m_collidedObjTag == "Wall" ? -0.7f : 1.0f;
+
         // direction : 시계 방향 => 1 / 반시계 방향 => -1
-        runDistance += Time.deltaTime * speed * (float)direction;
+        runDistance += Time.deltaTime * speed * (float)direction * wallCollisionCalibration;
     }
 
     public void TogglePlayer(int playerIndex)
@@ -125,5 +133,10 @@ public class GameManager : MonoBehaviour
     {
         if (m_maps[mapIndex].gameObject.activeSelf) return;
         foreach (GameObject map in m_maps) map.gameObject.SetActive(!map.gameObject.activeSelf);
+    }
+
+    public void RotateCamera(int direction)
+    {
+        m_camera.transform.Rotate(0, 0, (float)direction * Time.deltaTime * 90.0f, Space.Self);
     }
 }
