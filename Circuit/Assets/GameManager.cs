@@ -45,6 +45,7 @@ public class Player
 
 public class GameManager : MonoBehaviour
 {
+    public float FPS { get; private set; }
     //public int boolToDirection(bool b) { return b ? 1 : -1; }
 
     private InputManager m_inputManager;
@@ -58,10 +59,15 @@ public class GameManager : MonoBehaviour
 
     private float runDistance;
     private float speed;
+    private float frameCounter;
+    public float frameCounterFlag { get; private set; }
     public bool leverState { get; private set; }
+    public bool inCollision;
 
     void Start()
     {
+        FPS = 1.0f / Time.deltaTime;
+
         m_inputManager = gameObject.GetComponent<InputManager>();
         m_camera = GameObject.FindGameObjectWithTag("MainCamera");
 
@@ -79,7 +85,9 @@ public class GameManager : MonoBehaviour
 
         runDistance = 0.0f;
         speed = 2.0f;
+        frameCounter = 0.0f;
         leverState = false;
+        inCollision = false;
     }
 
     private void Update()
@@ -113,13 +121,14 @@ public class GameManager : MonoBehaviour
         return m_players.FirstOrDefault(p => p.obj.activeSelf).obj.GetComponent<T>();
     }
 
-    public void Run(int direction)
+    public void Move(int direction)
     {
-        // 벽 충돌 처리용 변수...인데 아무래도 깔끔하게 안 되는지라 여기에 시간 많이 할애할 거 아니면 벽을 안 넣는게 최선일 거 같음
-        float wallCollisionCalibration = GetActivePlayerComponent<CollisionCheck>().m_collidedObjTag == "Wall" ? -0.7f : 1.0f;
+        bool checkWalled = GetActivePlayerComponent<CollisionCheck>().m_collidedObjTag == "Wall";
+        // 벽 충돌 처리용 변수 선언
+        float wallCollisionC = checkWalled ? -3.0f : 1.0f;
 
         // direction : 시계 방향 => 1 / 반시계 방향 => -1
-        runDistance += Time.deltaTime * speed * (float)direction * wallCollisionCalibration;
+        runDistance += Time.deltaTime * speed * (float)direction * wallCollisionC;
     }
 
     public void TogglePlayer(int playerIndex)

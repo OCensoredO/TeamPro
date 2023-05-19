@@ -28,11 +28,11 @@ public class InputManager : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.LeftArrow))
         {
-            gManager.Run(1);
+            gManager.Move(1);
         }
         else if (Input.GetKey(KeyCode.RightArrow))
         {
-            gManager.Run(-1);
+            gManager.Move(-1);
         }
         // 스페이스 : 상호작용
         if (Input.GetKeyDown(KeyCode.Space))
