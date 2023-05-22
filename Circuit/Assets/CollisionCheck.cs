@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CollisionCheck : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class CollisionCheck : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         m_collidedObjTag = collision.gameObject.tag;
+        if (collision.gameObject.tag == "Obstacle") SceneManager.LoadScene("Main");
+        if (collision.gameObject.tag == "Finish") SceneManager.LoadScene("Test");
     }
 
     private void OnTriggerExit2D(Collider2D collision)

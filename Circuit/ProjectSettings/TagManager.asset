@@ -9,6 +9,7 @@ TagManager:
   - Map
   - Lever
   - Wall
+  - Obstacle
   layers:
   - Default
   - TransparentFX

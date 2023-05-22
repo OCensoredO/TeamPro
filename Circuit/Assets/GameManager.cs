@@ -7,6 +7,7 @@ public class Player
 {
     // 원형 맵의 중앙에서 떨어진 거리, 좋은 변수명은 아닌듯 해서 수정 가능성 높음
     private float posByRadius;
+    private Quaternion originalRotation;
 
     // 안팎 구분 위해 쓸 상수 설정
     public const int Inner = 0;
@@ -20,26 +21,35 @@ public class Player
     {
         this.obj = obj;
         this.posByRadius = Vector2.Distance(Vector2.zero, obj.transform.position);
+        this.originalRotation = obj.transform.rotation;
     }
 
     // moveCircular : 달린 거리값(runDistance)을 받아서 해당 위치로 이동 및 궤도에 알맞게 회전
     public void moveCircular(float runDistance)
     {
+        // 위치 설정
         obj.transform.position = RunDistanceToPos(runDistance);
-        obj.transform.rotation = Quaternion.LookRotation(Vector3.forward, new Vector3(0, 0, 1) - obj.transform.position);
+        // 로테이션 설정
+        obj.transform.rotation = originalRotation * Quaternion.LookRotation(Vector3.forward, new Vector3(0, 0, 1) - obj.transform.position);
+        //obj.transform.rotation = Quaternion.LookRotation(Vector3.forward, new Vector3(0, 0, 1) - obj.transform.position);
     }
 
     // RunDistanceToPos : float형의 달린 거리값(runDistance)을 Vector2 값으로 바꿔서 반환
     public Vector2 RunDistanceToPos(float runDistance)
     {
         Vector2 pos = new Vector2(posByRadius * Mathf.Cos(runDistance - Mathf.PI / 2.0f),
-                                   posByRadius * Mathf.Sin(runDistance - Mathf.PI / 2.0f));
+                                   posByRadius * Mathf.Sin(runDistance + Mathf.PI / 2.0f));
         return pos;
     }
 
     public void Toggle()
     {
         this.obj.SetActive(!this.obj.activeSelf);
+    }
+
+    public void Flip(int direction)
+    {
+        this.obj.GetComponent<SpriteRenderer>().flipX = (direction == 1);
     }
 }
 
@@ -121,6 +131,11 @@ public class GameManager : MonoBehaviour
         return m_players.FirstOrDefault(p => p.obj.activeSelf).obj.GetComponent<T>();
     }
 
+    public Player GetActivePlayer()
+    {
+        return m_players.FirstOrDefault(p => p.obj.activeSelf);
+    }
+
     public void Move(int direction)
     {
         bool checkWalled = GetActivePlayerComponent<CollisionCheck>().m_collidedObjTag == "Wall";
@@ -129,6 +144,7 @@ public class GameManager : MonoBehaviour
 
         // direction : 시계 방향 => 1 / 반시계 방향 => -1
         runDistance += Time.deltaTime * speed * (float)direction * wallCollisionC;
+        GetActivePlayer().Flip(direction);
     }
 
     public void TogglePlayer(int playerIndex)
