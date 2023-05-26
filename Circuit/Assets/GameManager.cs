@@ -69,7 +69,9 @@ public class GameManager : MonoBehaviour
 
     private float runDistance;
     private float speed;
-    private float frameCounter;
+    private float floatingSpeed;
+    private float floatingHeight;
+    //private float frameCounter;
     public float frameCounterFlag { get; private set; }
     public bool leverState { get; private set; }
     public bool inCollision;
@@ -94,8 +96,11 @@ public class GameManager : MonoBehaviour
         m_maps[1].gameObject.SetActive(false);
 
         runDistance = 0.0f;
-        speed = 2.0f;
-        frameCounter = 0.0f;
+        speed = 1.8f;
+        //frameCounter = 0.0f;
+        floatingSpeed = 1.5f;
+        floatingHeight = 0.06f;
+
         leverState = false;
         inCollision = false;
     }
@@ -108,7 +113,7 @@ public class GameManager : MonoBehaviour
         {
             player.moveCircular(runDistance);
             // 부유시키기
-            player.obj.transform.localPosition += player.obj.transform.up * Mathf.Sin(Time.time * 1.5f) * 0.12f;
+            player.obj.transform.localPosition += player.obj.transform.up * Mathf.Sin(Time.time * floatingSpeed) * floatingHeight;
         }
     }
 
@@ -140,7 +145,7 @@ public class GameManager : MonoBehaviour
     {
         bool checkWalled = GetActivePlayerComponent<CollisionCheck>().m_collidedObjTag == "Wall";
         // 벽 충돌 처리용 변수 선언
-        float wallCollisionC = checkWalled ? -3.0f : 1.0f;
+        float wallCollisionC = checkWalled ? -1.0f : 1.0f;
 
         // direction : 시계 방향 => 1 / 반시계 방향 => -1
         runDistance += Time.deltaTime * speed * (float)direction * wallCollisionC;
@@ -164,5 +169,10 @@ public class GameManager : MonoBehaviour
     public void RotateCamera(int direction)
     {
         m_camera.transform.Rotate(0, 0, (float)direction * Time.deltaTime * 90.0f, Space.Self);
+    }
+
+    public void Bash()
+    {
+
     }
 }

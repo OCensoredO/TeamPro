@@ -26,6 +26,11 @@ public class CollisionCheck : MonoBehaviour
         //if (collision.gameObject.tag == "Wall")
     }
 
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Wall")) 
+    }
+
     private void OnTriggerExit2D(Collider2D collision)
     {
         m_collidedObjTag = "NONE";
