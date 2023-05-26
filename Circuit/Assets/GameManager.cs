@@ -107,7 +107,7 @@ public class GameManager : MonoBehaviour
         foreach (Player player in m_players)
         {
             player.moveCircular(runDistance);
-            // 부유시키기(왕임시)
+            // 부유시키기
             player.obj.transform.localPosition += player.obj.transform.up * Mathf.Sin(Time.time * 1.5f) * 0.12f;
         }
     }
@@ -144,6 +144,7 @@ public class GameManager : MonoBehaviour
 
         // direction : 시계 방향 => 1 / 반시계 방향 => -1
         runDistance += Time.deltaTime * speed * (float)direction * wallCollisionC;
+        //runDistance += (float)direction * wallCollisionC * Time.deltaTime;
         GetActivePlayer().Flip(direction);
     }
 
