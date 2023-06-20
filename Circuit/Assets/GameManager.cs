@@ -89,8 +89,12 @@ public class GameManager : MonoBehaviour
 
         // 배경 오브젝트 찾아서 할당하기
         m_maps = new List<GameObject>();
+        /*
         foreach (GameObject mapObj in GameObject.FindGameObjectsWithTag("Map"))
             m_maps.Add(mapObj);
+        */
+        m_maps.Add(GameObject.FindGameObjectWithTag("InnerMap"));
+        m_maps.Add(GameObject.FindGameObjectWithTag("OuterMap"));
         m_maps[1].gameObject.SetActive(false);
 
         runDistance = 0.0f;
@@ -107,8 +111,8 @@ public class GameManager : MonoBehaviour
         foreach (Player player in m_players)
         {
             player.moveCircular(runDistance);
-            // 부유시키기(왕임시)
-            player.obj.transform.localPosition += player.obj.transform.up * Mathf.Sin(Time.time * 1.5f) * 0.12f;
+            // 부유시키기
+            player.obj.transform.localPosition += player.obj.transform.up * Mathf.Sin(Time.time * 1.5f) * 0.05f;
         }
     }
 
@@ -160,8 +164,31 @@ public class GameManager : MonoBehaviour
         foreach (GameObject map in m_maps) map.gameObject.SetActive(!map.gameObject.activeSelf);
     }
 
-    public void RotateCamera(int direction)
+    public void RotateMap(int direction)
     {
-        m_camera.transform.Rotate(0, 0, (float)direction * Time.deltaTime * 90.0f, Space.Self);
+        m_maps[0].transform.Rotate(0, 0, (float)direction * Time.deltaTime * 90.0f, Space.Self);
+        //GameObject.FindGameObjectWithTag("InnerMap").transform.Rotate(0, 0, (float)direction * Time.deltaTime * 90.0f, Space.Self);
+        //m_camera.transform.Rotate(0, 0, (float)direction * Time.deltaTime * 90.0f, Space.Self);
     }
+
+    /*
+    // moveCircular : 달린 거리값(runDistance)을 받아서 해당 위치로 이동 및 궤도에 알맞게 회전
+    public void moveCircular(float runDistance)
+    {
+        // 위치 설정
+        obj.transform.position = RunDistanceToPos(runDistance);
+        // 로테이션 설정
+        obj.transform.rotation = originalRotation * Quaternion.LookRotation(Vector3.forward, new Vector3(0, 0, 1) - obj.transform.position);
+        //obj.transform.rotation = Quaternion.LookRotation(Vector3.forward, new Vector3(0, 0, 1) - obj.transform.position);
+    }
+    
+
+    // RunDistanceToPos : float형의 달린 거리값(runDistance)을 Vector2 값으로 바꿔서 반환
+    public Vector2 RunDistanceToPos(float runDistance)
+    {
+        Vector2 pos = new Vector2(posByRadius * Mathf.Cos(runDistance - Mathf.PI / 2.0f),
+                                   posByRadius * Mathf.Sin(runDistance + Mathf.PI / 2.0f));
+        return pos;
+    }
+    */
 }

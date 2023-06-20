@@ -39,13 +39,14 @@ public class InputManager : MonoBehaviour
         {
             gManager.Interact();
         }
+        // q, e : 맵 돌리기
         if (Input.GetKey(KeyCode.Q))
         {
-            gManager.RotateCamera(-1);
+            gManager.RotateMap(-1);
         }
         if (Input.GetKey(KeyCode.E))
         {
-            gManager.RotateCamera(1);
+            gManager.RotateMap(1);
         }
         // 클릭 시 맵 반전(최적화 안 됨)(일단은 안씀)
         /*
