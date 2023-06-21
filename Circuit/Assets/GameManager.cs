@@ -69,9 +69,7 @@ public class GameManager : MonoBehaviour
 
     private float runDistance;
     private float speed;
-    private float floatingSpeed;
-    private float floatingHeight;
-    //private float frameCounter;
+    private float frameCounter;
     public float frameCounterFlag { get; private set; }
     public bool leverState { get; private set; }
     public bool inCollision;
@@ -91,16 +89,17 @@ public class GameManager : MonoBehaviour
 
         // 배경 오브젝트 찾아서 할당하기
         m_maps = new List<GameObject>();
+        /*
         foreach (GameObject mapObj in GameObject.FindGameObjectsWithTag("Map"))
             m_maps.Add(mapObj);
+        */
+        m_maps.Add(GameObject.FindGameObjectWithTag("InnerMap"));
+        m_maps.Add(GameObject.FindGameObjectWithTag("OuterMap"));
         m_maps[1].gameObject.SetActive(false);
 
         runDistance = 0.0f;
-        speed = 1.8f;
-        //frameCounter = 0.0f;
-        floatingSpeed = 1.5f;
-        floatingHeight = 0.06f;
-
+        speed = 2.0f;
+        frameCounter = 0.0f;
         leverState = false;
         inCollision = false;
     }
@@ -113,7 +112,7 @@ public class GameManager : MonoBehaviour
         {
             player.moveCircular(runDistance);
             // 부유시키기
-            player.obj.transform.localPosition += player.obj.transform.up * Mathf.Sin(Time.time * floatingSpeed) * floatingHeight;
+            player.obj.transform.localPosition += player.obj.transform.up * Mathf.Sin(Time.time * 1.5f) * 0.05f;
         }
     }
 
@@ -145,11 +144,10 @@ public class GameManager : MonoBehaviour
     {
         bool checkWalled = GetActivePlayerComponent<CollisionCheck>().m_collidedObjTag == "Wall";
         // 벽 충돌 처리용 변수 선언
-        float wallCollisionC = checkWalled ? -1.0f : 1.0f;
+        float wallCollisionC = checkWalled ? -3.0f : 1.0f;
 
         // direction : 시계 방향 => 1 / 반시계 방향 => -1
         runDistance += Time.deltaTime * speed * (float)direction * wallCollisionC;
-        //runDistance += (float)direction * wallCollisionC * Time.deltaTime;
         GetActivePlayer().Flip(direction);
     }
 
@@ -166,13 +164,31 @@ public class GameManager : MonoBehaviour
         foreach (GameObject map in m_maps) map.gameObject.SetActive(!map.gameObject.activeSelf);
     }
 
-    public void RotateCamera(int direction)
+    public void RotateMap(int direction)
     {
-        m_camera.transform.Rotate(0, 0, (float)direction * Time.deltaTime * 90.0f, Space.Self);
+        m_maps[0].transform.Rotate(0, 0, (float)direction * Time.deltaTime * 90.0f, Space.Self);
+        //GameObject.FindGameObjectWithTag("InnerMap").transform.Rotate(0, 0, (float)direction * Time.deltaTime * 90.0f, Space.Self);
+        //m_camera.transform.Rotate(0, 0, (float)direction * Time.deltaTime * 90.0f, Space.Self);
     }
 
-    public void Bash()
+    /*
+    // moveCircular : 달린 거리값(runDistance)을 받아서 해당 위치로 이동 및 궤도에 알맞게 회전
+    public void moveCircular(float runDistance)
     {
-
+        // 위치 설정
+        obj.transform.position = RunDistanceToPos(runDistance);
+        // 로테이션 설정
+        obj.transform.rotation = originalRotation * Quaternion.LookRotation(Vector3.forward, new Vector3(0, 0, 1) - obj.transform.position);
+        //obj.transform.rotation = Quaternion.LookRotation(Vector3.forward, new Vector3(0, 0, 1) - obj.transform.position);
     }
+    
+
+    // RunDistanceToPos : float형의 달린 거리값(runDistance)을 Vector2 값으로 바꿔서 반환
+    public Vector2 RunDistanceToPos(float runDistance)
+    {
+        Vector2 pos = new Vector2(posByRadius * Mathf.Cos(runDistance - Mathf.PI / 2.0f),
+                                   posByRadius * Mathf.Sin(runDistance + Mathf.PI / 2.0f));
+        return pos;
+    }
+    */
 }

@@ -6,29 +6,21 @@ using UnityEngine.SceneManagement;
 public class CollisionCheck : MonoBehaviour
 {
     public string m_collidedObjTag { get; private set; }
-    public Vector2 m_normal { get; private set; }
+    public string m_SuccessScene;
+    public string m_failScene;
 
     private void Start()
     {
         m_collidedObjTag = "NONE";
-        m_normal = new Vector2(0, 0);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         m_collidedObjTag = collision.gameObject.tag;
-        
-        if (collision.gameObject.CompareTag("Obstacle"))    SceneManager.LoadScene("Main");
-        else if (collision.gameObject.CompareTag("Finish")) SceneManager.LoadScene("Test");
-        //else if (collision.gameObject.CompareTag("Wall"))   m_normal = collision.ClosestPoint(collision.transform.position);
         //if (collision.gameObject.tag == "Obstacle") SceneManager.LoadScene("Main");
-        //if (collision.gameObject.tag == "Finish") SceneManager.LoadScene("Test");
-        //if (collision.gameObject.tag == "Wall")
-    }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (collision.gameObject.CompareTag("Wall")) 
+        if (collision.CompareTag("Obstacle")) SceneManager.LoadScene(m_failScene);
+        if (collision.CompareTag("Finish")) SceneManager.LoadScene(m_SuccessScene);
+        if (collision.CompareTag("Wall")) return;
     }
 
     private void OnTriggerExit2D(Collider2D collision)
