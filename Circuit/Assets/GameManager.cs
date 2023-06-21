@@ -13,8 +13,7 @@ public class Player
     public const int Inner = 0;
     public const int Outer = 1;
 
-    // 빠른 기능 구현 위해 임시로 obj를 public으로 설정함, 따라서 나중에 public 키워드는 뺄 예정
-    // ...이었는데 아래처럼 중괄호 안에 속성 부여?하면 보안상으로도 문제?없는?듯?
+    // 플레이어 오브젝트
     public GameObject obj { get; private set; }
 
     public Player(GameObject obj)
@@ -23,6 +22,7 @@ public class Player
         this.posByRadius = Vector2.Distance(Vector2.zero, obj.transform.position);
         this.originalRotation = obj.transform.rotation;
     }
+
 
     // moveCircular : 달린 거리값(runDistance)을 받아서 해당 위치로 이동 및 궤도에 알맞게 회전
     public void moveCircular(float runDistance)
@@ -34,6 +34,7 @@ public class Player
         //obj.transform.rotation = Quaternion.LookRotation(Vector3.forward, new Vector3(0, 0, 1) - obj.transform.position);
     }
 
+
     // RunDistanceToPos : float형의 달린 거리값(runDistance)을 Vector2 값으로 바꿔서 반환
     public Vector2 RunDistanceToPos(float runDistance)
     {
@@ -42,10 +43,12 @@ public class Player
         return pos;
     }
 
+
     public void Toggle()
     {
         this.obj.SetActive(!this.obj.activeSelf);
     }
+
 
     public void Flip(int direction)
     {
@@ -63,9 +66,8 @@ public class GameManager : MonoBehaviour
     //GameObject gSquareObj;
     public List<Player> m_players { get; private set; }                   // player 오브젝트들 저장하는 리스트
     public List<GameObject> m_maps { get; private set; }
+    public GameObject prefab;
 
-    //GameObject mapIn;
-    //GameObject mapOut;
 
     private float runDistance;
     private float speed;
@@ -102,6 +104,8 @@ public class GameManager : MonoBehaviour
         frameCounter = 0.0f;
         leverState = false;
         inCollision = false;
+
+        Instantiate(prefab, m_maps[0].transform);
     }
 
     private void Update()
