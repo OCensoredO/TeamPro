@@ -63,16 +63,19 @@ public class GameManager : MonoBehaviour
 
     private InputManager m_inputManager;
     private GameObject m_camera;
-    //GameObject gSquareObj;
+
     public List<Player> m_players { get; private set; }                   // player 오브젝트들 저장하는 리스트
     public List<GameObject> m_maps { get; private set; }
-    public GameObject prefab;
 
+    public GameObject prefab;
+    // 맵 스프라이트 변경용 스프라이트 배열
+    public Sprite[] InnerSprites;
+    public Sprite[] OuterSprites;
 
     private float runDistance;
     private float speed;
-    private float frameCounter;
-    public float frameCounterFlag { get; private set; }
+    //private float frameCounter;
+    //public float frameCounterFlag { get; private set; }
     public bool leverState { get; private set; }
     public bool inCollision;
 
@@ -91,21 +94,24 @@ public class GameManager : MonoBehaviour
 
         // 배경 오브젝트 찾아서 할당하기
         m_maps = new List<GameObject>();
-        /*
-        foreach (GameObject mapObj in GameObject.FindGameObjectsWithTag("Map"))
-            m_maps.Add(mapObj);
-        */
         m_maps.Add(GameObject.FindGameObjectWithTag("InnerMap"));
         m_maps.Add(GameObject.FindGameObjectWithTag("OuterMap"));
-        m_maps[1].gameObject.SetActive(false);
+
+        // 배경 기본 스프라이트 설정, 안에서 시작할 것이므로 안에 있을 때 기준 스프라이트가 기본값
+        //m_maps[1].gameObject.SetActive(false);
+        m_maps[0].GetComponent<SpriteRenderer>().sprite = InnerSprites[0];
+        m_maps[0].transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        m_maps[1].GetComponent<SpriteRenderer>().sprite = OuterSprites[0];
+        m_maps[1].transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
 
         runDistance = 0.0f;
         speed = 2.0f;
-        frameCounter = 0.0f;
+        //frameCounter = 0.0f;
         leverState = false;
         inCollision = false;
 
-        Instantiate(prefab, m_maps[0].transform);
+        // 오브젝트 맵에 달라붙게 하는 거 테스트용
+        //Instantiate(prefab, m_maps[0].transform);
     }
 
     private void Update()
@@ -161,18 +167,21 @@ public class GameManager : MonoBehaviour
         foreach (Player player in m_players) player.Toggle();
     }
 
-    // 배경 전환
+    // 배경 전환(mapIndex : 0 = 안, 1 = 밖)
+    // SetActive값을 바꾸는 방식에서 스프라이트를 갈아끼는 방식으로 바꿈
     public void ToggleBackGround(int mapIndex)
     {
-        if (m_maps[mapIndex].gameObject.activeSelf) return;
-        foreach (GameObject map in m_maps) map.gameObject.SetActive(!map.gameObject.activeSelf);
+        m_maps[0].GetComponent<SpriteRenderer>().sprite = InnerSprites[mapIndex];
+        m_maps[0].transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        m_maps[1].GetComponent<SpriteRenderer>().sprite = OuterSprites[mapIndex];
+        m_maps[1].transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        //if (m_maps[mapIndex].gameObject.activeSelf) return;
+        //foreach (GameObject map in m_maps) map.gameObject.SetActive(!map.gameObject.activeSelf);
     }
 
     public void RotateMap(int direction)
     {
         m_maps[0].transform.Rotate(0, 0, (float)direction * Time.deltaTime * 90.0f, Space.Self);
-        //GameObject.FindGameObjectWithTag("InnerMap").transform.Rotate(0, 0, (float)direction * Time.deltaTime * 90.0f, Space.Self);
-        //m_camera.transform.Rotate(0, 0, (float)direction * Time.deltaTime * 90.0f, Space.Self);
     }
 
     /*
