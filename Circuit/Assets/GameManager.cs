@@ -97,12 +97,8 @@ public class GameManager : MonoBehaviour
         m_maps.Add(GameObject.FindGameObjectWithTag("InnerMap"));
         m_maps.Add(GameObject.FindGameObjectWithTag("OuterMap"));
 
-        // 배경 기본 스프라이트 설정, 안에서 시작할 것이므로 안에 있을 때 기준 스프라이트가 기본값
-        //m_maps[1].gameObject.SetActive(false);
-        m_maps[0].GetComponent<SpriteRenderer>().sprite = InnerSprites[0];
-        m_maps[0].transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-        m_maps[1].GetComponent<SpriteRenderer>().sprite = OuterSprites[0];
-        m_maps[1].transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        // 배경 기본 스프라이트 설정, 안에서 시작할 것이므로 안에 있을 때 기준 스프라이트(0번 인덱스의 스프라이트)가 기본값
+        ToggleBackGround(0);
 
         runDistance = 0.0f;
         speed = 2.0f;
@@ -171,12 +167,12 @@ public class GameManager : MonoBehaviour
     // SetActive값을 바꾸는 방식에서 스프라이트를 갈아끼는 방식으로 바꿈
     public void ToggleBackGround(int mapIndex)
     {
+        // 스프라이트 갈아끼기
         m_maps[0].GetComponent<SpriteRenderer>().sprite = InnerSprites[mapIndex];
-        m_maps[0].transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
         m_maps[1].GetComponent<SpriteRenderer>().sprite = OuterSprites[mapIndex];
-        m_maps[1].transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-        //if (m_maps[mapIndex].gameObject.activeSelf) return;
-        //foreach (GameObject map in m_maps) map.gameObject.SetActive(!map.gameObject.activeSelf);
+        // 스프라이트 크기 재조정
+        m_maps[0].transform.localScale = new Vector3(2.0f, 2.0f, 0.0f);
+        m_maps[1].transform.localScale = new Vector3(1.0f, 1.0f, 0.0f);
     }
 
     public void RotateMap(int direction)
