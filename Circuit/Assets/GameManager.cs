@@ -171,8 +171,8 @@ public class GameManager : MonoBehaviour
         m_maps[0].GetComponent<SpriteRenderer>().sprite = InnerSprites[mapIndex];
         m_maps[1].GetComponent<SpriteRenderer>().sprite = OuterSprites[mapIndex];
         // 스프라이트 크기 재조정
-        m_maps[0].transform.localScale = new Vector3(2.0f, 2.0f, 0.0f);
-        m_maps[1].transform.localScale = new Vector3(1.0f, 1.0f, 0.0f);
+        m_maps[0].transform.localScale = new Vector3(2.0f, 2.0f, 2.0f);
+        m_maps[1].transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
     }
 
     public void RotateMap(int direction)
