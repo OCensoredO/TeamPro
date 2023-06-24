@@ -12,6 +12,7 @@ TagManager:
   - Obstacle
   - InnerMap
   - OuterMap
+  - LeverObj
   layers:
   - Default
   - TransparentFX

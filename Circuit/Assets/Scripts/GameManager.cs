@@ -66,18 +66,23 @@ public class GameManager : MonoBehaviour
 
     public List<Player> m_players { get; private set; }                   // player 오브젝트들 저장하는 리스트
     public List<GameObject> m_maps { get; private set; }
+    public List<GameObject> m_leverObjs { get; private set; }
 
-    public GameObject prefab;
+    public GameObject[] prefabs;
+
+    // 스프라이트 저장할 배열들
     // 맵 스프라이트 변경용 스프라이트 배열
     public Sprite[] InnerSprites;
     public Sprite[] OuterSprites;
+    // 오브젝트용 스프라이트
+    public Sprite[] leverObjSprites;
 
     private float runDistance;
     private float speed;
     //private float frameCounter;
     //public float frameCounterFlag { get; private set; }
     public bool leverState { get; private set; }
-    public bool inCollision;
+    //public bool inCollision;
 
     void Start()
     {
@@ -97,6 +102,13 @@ public class GameManager : MonoBehaviour
         m_maps.Add(GameObject.FindGameObjectWithTag("InnerMap"));
         m_maps.Add(GameObject.FindGameObjectWithTag("OuterMap"));
 
+        // 레버 오브젝트 찾아서 m_leverObjs에 저장
+        m_leverObjs = new List<GameObject>();
+        foreach (GameObject lObj in GameObject.FindGameObjectsWithTag("LeverObj"))
+            m_leverObjs.Add(lObj);
+        foreach (GameObject lObj in m_leverObjs)
+            lObj.GetComponent<SpriteRenderer>().sprite = leverObjSprites[0];
+
         // 배경 기본 스프라이트 설정, 안에서 시작할 것이므로 안에 있을 때 기준 스프라이트(0번 인덱스의 스프라이트)가 기본값
         ToggleBackGround(0);
 
@@ -104,7 +116,7 @@ public class GameManager : MonoBehaviour
         speed = 2.0f;
         //frameCounter = 0.0f;
         leverState = false;
-        inCollision = false;
+        //inCollision = false;
 
         // 오브젝트 맵에 달라붙게 하는 거 테스트용
         //Instantiate(prefab, m_maps[0].transform);
@@ -129,6 +141,32 @@ public class GameManager : MonoBehaviour
             case "Lever":
                 Debug.Log("레버 건드림");
                 leverState = !leverState;
+                List<GameObject> TempleverObjs = new List<GameObject>();
+
+                //int prefabIndex = leverState ? 1 : 0;
+                foreach (GameObject lObj in m_leverObjs)
+                {
+                    GameObject clonedLObj;
+                    if (leverState)
+                    {
+                        clonedLObj = Instantiate(prefabs[1], lObj.transform.position, lObj.transform.rotation);
+                    }
+                    else
+                    {
+                        clonedLObj = Instantiate(prefabs[0], m_maps[0].transform);
+                        clonedLObj.transform.position = lObj.transform.position;
+                    }
+                    //clonedLObj = leverState ? Instantiate(prefabs[1], lObj.transform.position, lObj.transform.rotation) :
+                    //                            Instantiate(prefabs[0], m_maps[0].transform);
+                    clonedLObj.GetComponent<SpriteRenderer>().sortingLayerName = "Layer2";
+                    TempleverObjs.Add(clonedLObj);
+                    Destroy(lObj);
+                }
+                m_leverObjs.Clear();
+                foreach (GameObject lObj in TempleverObjs)
+                    m_leverObjs.Add(lObj);
+                TempleverObjs.Clear();
+
                 break;
             default:
                 break;
@@ -171,8 +209,8 @@ public class GameManager : MonoBehaviour
         m_maps[0].GetComponent<SpriteRenderer>().sprite = InnerSprites[mapIndex];
         m_maps[1].GetComponent<SpriteRenderer>().sprite = OuterSprites[mapIndex];
         // 스프라이트 크기 재조정
-        m_maps[0].transform.localScale = new Vector3(2.0f, 2.0f, 2.0f);
-        m_maps[1].transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        //m_maps[0].transform.localScale = new Vector3(2.0f, 2.0f, 2.0f);
+        //m_maps[1].transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
     }
 
     public void RotateMap(int direction)
