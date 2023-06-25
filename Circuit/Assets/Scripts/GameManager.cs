@@ -79,10 +79,11 @@ public class GameManager : MonoBehaviour
 
     private float runDistance;
     private float speed;
-    //private float frameCounter;
-    //public float frameCounterFlag { get; private set; }
+
     public bool leverState { get; private set; }
-    //public bool inCollision;
+    public bool goalState { get; private set; }
+    public int kioskCount;
+    public int kioskNum { get; private set; }
 
     void Start()
     {
@@ -109,6 +110,10 @@ public class GameManager : MonoBehaviour
         foreach (GameObject lObj in m_leverObjs)
             lObj.GetComponent<SpriteRenderer>().sprite = leverObjSprites[0];
 
+        // 키오스크 갯수 세기
+        foreach (object kiosk in GameObject.FindGameObjectsWithTag("Kiosk"))
+            kioskNum++;
+
         // 배경 기본 스프라이트 설정, 안에서 시작할 것이므로 안에 있을 때 기준 스프라이트(0번 인덱스의 스프라이트)가 기본값
         ToggleBackGround(0);
 
@@ -116,6 +121,7 @@ public class GameManager : MonoBehaviour
         speed = 2.0f;
         //frameCounter = 0.0f;
         leverState = false;
+        goalState = kioskNum == 0 ? true : false;
         //inCollision = false;
 
         // 오브젝트 맵에 달라붙게 하는 거 테스트용
@@ -139,12 +145,10 @@ public class GameManager : MonoBehaviour
         switch (GetActivePlayerComponent<CollisionCheck>().m_collidedObjTag)
         {
             case "Lever":
-                Debug.Log("레버 건드림");
                 leverState = !leverState;
                 List<GameObject> TempleverObjs = new List<GameObject>();
                 GameObject.FindGameObjectWithTag("Lever").GetComponent<SpriteRenderer>().flipX = !GameObject.FindGameObjectWithTag("Lever").GetComponent<SpriteRenderer>().flipX;
 
-                //int prefabIndex = leverState ? 1 : 0;
                 foreach (GameObject lObj in m_leverObjs)
                 {
                     GameObject clonedLObj;
@@ -159,8 +163,7 @@ public class GameManager : MonoBehaviour
                         clonedLObj.transform.rotation = lObj.transform.rotation;
                         clonedLObj.transform.localScale = prefabs[0].transform.localScale;
                     }
-                    //clonedLObj = leverState ? Instantiate(prefabs[1], lObj.transform.position, lObj.transform.rotation) :
-                    //                            Instantiate(prefabs[0], m_maps[0].transform);
+
                     clonedLObj.GetComponent<SpriteRenderer>().sortingLayerName = "Layer2";
                     TempleverObjs.Add(clonedLObj);
                     Destroy(lObj);
@@ -169,6 +172,27 @@ public class GameManager : MonoBehaviour
                 foreach (GameObject lObj in TempleverObjs)
                     m_leverObjs.Add(lObj);
                 TempleverObjs.Clear();
+
+                break;
+            case "Kiosk":
+                kioskCount++;
+                if (kioskCount == kioskNum)
+                {
+                    GameObject clonedObj, originObj;
+                    clonedObj = Instantiate(prefabs[2], m_maps[0].transform);
+                    originObj = GameObject.FindGameObjectWithTag("ClosedGoal");
+                    clonedObj.transform.position = originObj.transform.position;
+                    clonedObj.transform.rotation = originObj.transform.rotation;
+                    clonedObj.transform.localScale = prefabs[2].transform.localScale;
+                    Destroy(originObj);
+
+                    clonedObj = Instantiate(prefabs[3], m_maps[0].transform);
+                    originObj = GameObject.FindGameObjectWithTag("Kiosk");
+                    clonedObj.transform.position = originObj.transform.position;
+                    clonedObj.transform.rotation = originObj.transform.rotation;
+                    clonedObj.transform.localScale = prefabs[3].transform.localScale;
+                    Destroy(originObj);
+                }
 
                 break;
             default:
