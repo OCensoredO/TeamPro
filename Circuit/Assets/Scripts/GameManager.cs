@@ -62,7 +62,8 @@ public class GameManager : MonoBehaviour
     //public int boolToDirection(bool b) { return b ? 1 : -1; }
 
     private InputManager m_inputManager;
-    private GameObject m_camera;
+    //private GameObject m_camera;
+    private AudioSource m_audioSource;
 
     public List<Player> m_players { get; private set; }                   // player 오브젝트들 저장하는 리스트
     public List<GameObject> m_maps { get; private set; }
@@ -90,7 +91,7 @@ public class GameManager : MonoBehaviour
         FPS = 1.0f / Time.deltaTime;
 
         m_inputManager = gameObject.GetComponent<InputManager>();
-        m_camera = GameObject.FindGameObjectWithTag("MainCamera");
+        //m_camera = GameObject.FindGameObjectWithTag("MainCamera");
 
         // 플레이어 오브젝트 찾아서 할당하기
         m_players = new List<Player>();
@@ -172,6 +173,8 @@ public class GameManager : MonoBehaviour
                 foreach (GameObject lObj in TempleverObjs)
                     m_leverObjs.Add(lObj);
                 TempleverObjs.Clear();
+                //m_audioSource.clip = m_inputManager.wavs[2];
+                //m_audioSource.Play();
 
                 break;
             case "Kiosk":
@@ -192,6 +195,9 @@ public class GameManager : MonoBehaviour
                     clonedObj.transform.rotation = originObj.transform.rotation;
                     clonedObj.transform.localScale = prefabs[3].transform.localScale;
                     Destroy(originObj);
+
+                    //m_audioSource.clip = m_inputManager.wavs[3];
+                    //m_audioSource.Play();
                 }
 
                 break;

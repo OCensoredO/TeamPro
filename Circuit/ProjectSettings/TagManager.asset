@@ -15,6 +15,7 @@ TagManager:
   - LeverObj
   - ClosedGoal
   - Kiosk
+  - BGM
   layers:
   - Default
   - TransparentFX

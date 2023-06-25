@@ -6,10 +6,13 @@ using System.Linq;
 public class InputManager : MonoBehaviour
 {
     private GameManager gManager;
+    private AudioSource aSourse;
+    public AudioClip[] wavs;
 
     void Start()
     {
         gManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        aSourse = GetComponent<AudioSource>();
     }
 
     public void ManageInput()
@@ -19,12 +22,16 @@ public class InputManager : MonoBehaviour
         {
             gManager.TogglePlayer(Player.Outer);
             gManager.ToggleBackGround(1);
+            aSourse.clip = wavs[0];
+            aSourse.Play();
         }
         // 안으로 들어가기
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             gManager.TogglePlayer(Player.Inner);
             gManager.ToggleBackGround(0);
+            aSourse.clip = wavs[1];
+            aSourse.Play();
         }
         if (Input.GetKey(KeyCode.LeftArrow))
         {
@@ -38,6 +45,18 @@ public class InputManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             gManager.Interact();
+            switch (gManager.GetActivePlayerComponent<CollisionCheck>().m_collidedObjTag)
+            {
+                case "Lever":
+                    aSourse.clip = wavs[2];
+                    break;
+                case "Kiosk":
+                    aSourse.clip = wavs[3];
+                    break;
+                default:
+                    break;
+            }
+            aSourse.Play();
         }
         // q, e : 맵 돌리기
         if (Input.GetKey(KeyCode.Q))
@@ -48,22 +67,5 @@ public class InputManager : MonoBehaviour
         {
             gManager.RotateMap(1);
         }
-        // 클릭 시 맵 반전(최적화 안 됨)(일단은 안씀)
-        /*
-        if (Input.GetMouseButtonDown(0))
-        {
-            Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D mouseHit = Physics2D.Raycast(worldPoint, Vector2.zero);
-
-            if (mouseHit.collider.name == "CircleArea")
-            {
-                gManager.ToggleBackGround(0);
-            }
-            else if (mouseHit.collider.name == "OuterArea")
-            {
-                gManager.ToggleBackGround(1);
-            }
-        }
-        */
     }
 }
