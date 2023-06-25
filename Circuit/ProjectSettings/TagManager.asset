@@ -13,9 +13,6 @@ TagManager:
   - InnerMap
   - OuterMap
   - LeverObj
-  - ClosedGoal
-  - Kiosk
-  - BGM
   layers:
   - Default
   - TransparentFX

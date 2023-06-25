@@ -62,8 +62,7 @@ public class GameManager : MonoBehaviour
     //public int boolToDirection(bool b) { return b ? 1 : -1; }
 
     private InputManager m_inputManager;
-    //private GameObject m_camera;
-    private AudioSource m_audioSource;
+    private GameObject m_camera;
 
     public List<Player> m_players { get; private set; }                   // player 오브젝트들 저장하는 리스트
     public List<GameObject> m_maps { get; private set; }
@@ -80,18 +79,17 @@ public class GameManager : MonoBehaviour
 
     private float runDistance;
     private float speed;
-
+    //private float frameCounter;
+    //public float frameCounterFlag { get; private set; }
     public bool leverState { get; private set; }
-    public bool goalState { get; private set; }
-    public int kioskCount;
-    public int kioskNum { get; private set; }
+    //public bool inCollision;
 
     void Start()
     {
         FPS = 1.0f / Time.deltaTime;
 
         m_inputManager = gameObject.GetComponent<InputManager>();
-        //m_camera = GameObject.FindGameObjectWithTag("MainCamera");
+        m_camera = GameObject.FindGameObjectWithTag("MainCamera");
 
         // 플레이어 오브젝트 찾아서 할당하기
         m_players = new List<Player>();
@@ -111,10 +109,6 @@ public class GameManager : MonoBehaviour
         foreach (GameObject lObj in m_leverObjs)
             lObj.GetComponent<SpriteRenderer>().sprite = leverObjSprites[0];
 
-        // 키오스크 갯수 세기
-        foreach (object kiosk in GameObject.FindGameObjectsWithTag("Kiosk"))
-            kioskNum++;
-
         // 배경 기본 스프라이트 설정, 안에서 시작할 것이므로 안에 있을 때 기준 스프라이트(0번 인덱스의 스프라이트)가 기본값
         ToggleBackGround(0);
 
@@ -122,7 +116,6 @@ public class GameManager : MonoBehaviour
         speed = 2.0f;
         //frameCounter = 0.0f;
         leverState = false;
-        goalState = kioskNum == 0 ? true : false;
         //inCollision = false;
 
         // 오브젝트 맵에 달라붙게 하는 거 테스트용
@@ -146,10 +139,11 @@ public class GameManager : MonoBehaviour
         switch (GetActivePlayerComponent<CollisionCheck>().m_collidedObjTag)
         {
             case "Lever":
+                Debug.Log("레버 건드림");
                 leverState = !leverState;
                 List<GameObject> TempleverObjs = new List<GameObject>();
-                GameObject.FindGameObjectWithTag("Lever").GetComponent<SpriteRenderer>().flipX = !GameObject.FindGameObjectWithTag("Lever").GetComponent<SpriteRenderer>().flipX;
 
+                //int prefabIndex = leverState ? 1 : 0;
                 foreach (GameObject lObj in m_leverObjs)
                 {
                     GameObject clonedLObj;
@@ -161,10 +155,9 @@ public class GameManager : MonoBehaviour
                     {
                         clonedLObj = Instantiate(prefabs[0], m_maps[0].transform);
                         clonedLObj.transform.position = lObj.transform.position;
-                        clonedLObj.transform.rotation = lObj.transform.rotation;
-                        clonedLObj.transform.localScale = prefabs[0].transform.localScale;
                     }
-
+                    //clonedLObj = leverState ? Instantiate(prefabs[1], lObj.transform.position, lObj.transform.rotation) :
+                    //                            Instantiate(prefabs[0], m_maps[0].transform);
                     clonedLObj.GetComponent<SpriteRenderer>().sortingLayerName = "Layer2";
                     TempleverObjs.Add(clonedLObj);
                     Destroy(lObj);
@@ -173,32 +166,6 @@ public class GameManager : MonoBehaviour
                 foreach (GameObject lObj in TempleverObjs)
                     m_leverObjs.Add(lObj);
                 TempleverObjs.Clear();
-                //m_audioSource.clip = m_inputManager.wavs[2];
-                //m_audioSource.Play();
-
-                break;
-            case "Kiosk":
-                kioskCount++;
-                if (kioskCount == kioskNum)
-                {
-                    GameObject clonedObj, originObj;
-                    clonedObj = Instantiate(prefabs[2], m_maps[0].transform);
-                    originObj = GameObject.FindGameObjectWithTag("ClosedGoal");
-                    clonedObj.transform.position = originObj.transform.position;
-                    clonedObj.transform.rotation = originObj.transform.rotation;
-                    clonedObj.transform.localScale = prefabs[2].transform.localScale;
-                    Destroy(originObj);
-
-                    clonedObj = Instantiate(prefabs[3], m_maps[0].transform);
-                    originObj = GameObject.FindGameObjectWithTag("Kiosk");
-                    clonedObj.transform.position = originObj.transform.position;
-                    clonedObj.transform.rotation = originObj.transform.rotation;
-                    clonedObj.transform.localScale = prefabs[3].transform.localScale;
-                    Destroy(originObj);
-
-                    //m_audioSource.clip = m_inputManager.wavs[3];
-                    //m_audioSource.Play();
-                }
 
                 break;
             default:
@@ -219,7 +186,7 @@ public class GameManager : MonoBehaviour
 
     public void Move(int direction)
     {
-        bool checkWalled = GetActivePlayerComponent<CollisionCheck>().m_collidedObjTag == "Wall" || GetActivePlayerComponent<CollisionCheck>().m_collidedObjTag == "LeverObj";
+        bool checkWalled = GetActivePlayerComponent<CollisionCheck>().m_collidedObjTag == "Wall";
         // 벽 충돌 처리용 변수 선언
         float wallCollisionC = checkWalled ? -3.0f : 1.0f;
 

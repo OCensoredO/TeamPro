@@ -8,8 +8,7 @@ public class SpriteAnimation : MonoBehaviour
 
     // 애니메이션에 쓰일 각 프레임별 스프라이트를 저장할 배열
     public Sprite[] frames;
-    
-    // 애니메이션 초당 프레임
+    // 애니메이션의 지속 프레임..?
     public float frameRate;
 
     private SpriteRenderer spriteRenderer;
