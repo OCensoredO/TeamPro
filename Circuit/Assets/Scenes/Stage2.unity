@@ -267,6 +267,8 @@ MonoBehaviour:
   - {fileID: 441834049, guid: f7eab2922f3083e4f852e664baa8620e, type: 3}
   - {fileID: 441834049, guid: f7eab2922f3083e4f852e664baa8620e, type: 3}
   frameRate: 24
+  endScene: 0
+  failScene: 
 --- !u!50 &510154284
 Rigidbody2D:
   serializedVersion: 4
@@ -300,8 +302,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88fe6565c54d8034e901252c93163e88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nullSprite: {fileID: 1262180567, guid: 56f3172d20572ff40a416857e7eb07fd, type: 3}
   m_SuccessScene: Stage3
   m_failScene: Stage2
+  deathPrefab: {fileID: 6235369415171326085, guid: 317ad259727c22a4c8dca71d64e69c50, type: 3}
 --- !u!61 &510154286
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1106,6 +1110,8 @@ MonoBehaviour:
   - {fileID: 441834049, guid: f7eab2922f3083e4f852e664baa8620e, type: 3}
   - {fileID: 441834049, guid: f7eab2922f3083e4f852e664baa8620e, type: 3}
   frameRate: 24
+  endScene: 0
+  failScene: 
 --- !u!50 &1831566260
 Rigidbody2D:
   serializedVersion: 4
@@ -1139,8 +1145,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88fe6565c54d8034e901252c93163e88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nullSprite: {fileID: 1262180567, guid: 56f3172d20572ff40a416857e7eb07fd, type: 3}
   m_SuccessScene: Stage3
   m_failScene: Stage2
+  deathPrefab: {fileID: 6235369415171326085, guid: 317ad259727c22a4c8dca71d64e69c50, type: 3}
 --- !u!61 &1831566262
 BoxCollider2D:
   m_ObjectHideFlags: 0

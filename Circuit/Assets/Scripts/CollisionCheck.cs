@@ -5,9 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class CollisionCheck : MonoBehaviour
 {
+    public Sprite nullSprite;
     public string m_collidedObjTag { get; private set; }
     public string m_SuccessScene;
     public string m_failScene;
+
+    public GameObject deathPrefab;
 
     private void Start()
     {
@@ -18,7 +21,15 @@ public class CollisionCheck : MonoBehaviour
     {
         m_collidedObjTag = collision.gameObject.tag;
         //if (collision.gameObject.tag == "Obstacle") SceneManager.LoadScene("Main");
-        if (collision.CompareTag("Obstacle")) SceneManager.LoadScene(m_failScene);
+        if (collision.CompareTag("Obstacle"))
+        {
+            Instantiate(deathPrefab, transform);
+            deathPrefab.GetComponent<SpriteAnimation>().failScene = m_failScene;
+            gameObject.GetComponent<SpriteRenderer>().sortingLayerName = "Default";
+            gameObject.GetComponent<SpriteRenderer>().sprite = nullSprite;
+            gameObject.GetComponent<SpriteAnimation>().isStop = true;
+            gameObject.transform.position = new Vector3(0.0f, 0.0f, -50.0f);
+        }
         if (collision.CompareTag("Finish")) SceneManager.LoadScene(m_SuccessScene);
         if (collision.CompareTag("Wall")) return;
     }

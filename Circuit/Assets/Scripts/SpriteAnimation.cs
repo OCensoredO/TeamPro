@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SpriteAnimation : MonoBehaviour
 {
@@ -15,6 +16,9 @@ public class SpriteAnimation : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private int currentFrameIndex = 0;
     private float timer = 0f;
+    public bool endScene = false;
+    public bool isStop = false;
+    public string failScene;
 
     private void Awake()
     {
@@ -24,6 +28,7 @@ public class SpriteAnimation : MonoBehaviour
 
     private void Update()
     {
+        if (isStop) return;
         // 주사율에 기반하여 애니메이션 업데이트
         timer += Time.deltaTime;
         if (timer >= 1f / frameRate)
@@ -31,6 +36,7 @@ public class SpriteAnimation : MonoBehaviour
             currentFrameIndex++;
             if (currentFrameIndex >= frames.Length)
             {
+                if (endScene) SceneManager.LoadScene(failScene);
                 currentFrameIndex = 0;
             }
 
