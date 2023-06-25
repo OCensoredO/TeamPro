@@ -108,10 +108,10 @@ TextureImporter:
       name: Objects2_1
       rect:
         serializedVersion: 2
-        x: 1795
-        y: 768
-        width: 500
-        height: 500
+        x: 1766
+        y: 744
+        width: 550
+        height: 550
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -171,10 +171,10 @@ TextureImporter:
       name: Objects2_12
       rect:
         serializedVersion: 2
-        x: 1317
-        y: 850
-        width: 350
-        height: 350
+        x: 1342
+        y: 870
+        width: 300
+        height: 300
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}

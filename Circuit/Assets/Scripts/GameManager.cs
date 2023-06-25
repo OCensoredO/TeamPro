@@ -142,6 +142,7 @@ public class GameManager : MonoBehaviour
                 Debug.Log("레버 건드림");
                 leverState = !leverState;
                 List<GameObject> TempleverObjs = new List<GameObject>();
+                GameObject.FindGameObjectWithTag("Lever").GetComponent<SpriteRenderer>().flipX = !GameObject.FindGameObjectWithTag("Lever").GetComponent<SpriteRenderer>().flipX;
 
                 //int prefabIndex = leverState ? 1 : 0;
                 foreach (GameObject lObj in m_leverObjs)
@@ -155,6 +156,8 @@ public class GameManager : MonoBehaviour
                     {
                         clonedLObj = Instantiate(prefabs[0], m_maps[0].transform);
                         clonedLObj.transform.position = lObj.transform.position;
+                        clonedLObj.transform.rotation = lObj.transform.rotation;
+                        clonedLObj.transform.localScale = prefabs[0].transform.localScale;
                     }
                     //clonedLObj = leverState ? Instantiate(prefabs[1], lObj.transform.position, lObj.transform.rotation) :
                     //                            Instantiate(prefabs[0], m_maps[0].transform);
@@ -186,7 +189,7 @@ public class GameManager : MonoBehaviour
 
     public void Move(int direction)
     {
-        bool checkWalled = GetActivePlayerComponent<CollisionCheck>().m_collidedObjTag == "Wall";
+        bool checkWalled = GetActivePlayerComponent<CollisionCheck>().m_collidedObjTag == "Wall" || GetActivePlayerComponent<CollisionCheck>().m_collidedObjTag == "LeverObj";
         // 벽 충돌 처리용 변수 선언
         float wallCollisionC = checkWalled ? -3.0f : 1.0f;
 
