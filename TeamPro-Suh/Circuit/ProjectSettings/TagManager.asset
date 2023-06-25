@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Ground
+  - GSquare
+  - Map
+  - Lever
+  - Wall
+  - Obstacle
+  - InnerMap
+  - OuterMap
+  - LeverObj
+  - ClosedGoal
+  - Kiosk
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: bg0
+    uniqueID: 1307186273
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: bg1
+    uniqueID: 3628840819
+    locked: 0
+  - name: bg3
+    uniqueID: 3525560169
+    locked: 0
+  - name: bg4
+    uniqueID: 2337414953
+    locked: 0
+  - name: bg5
+    uniqueID: 1995229077
+    locked: 0
+  - name: ui1
+    uniqueID: 3466440617
+    locked: 0
+  - name: ui2
+    uniqueID: 2101586303
+    locked: 0
